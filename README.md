@@ -9,15 +9,14 @@ _⭐ If you find this tool useful please consider giving it a star on Github ⭐
 
 <img src="https://github.com/user-attachments/assets/7523e907-893a-4540-bc8a-b6800fb8c566" width="500">
 
-- [Basic Usage](#basic-usage)
+- [Basic Example](#basic-example)
   - [JavaScript](#javascript)
-- [CSS](#css)
-- [Server](#server)
+  - [CSS](#css)
+  - [Server](#server)
   - [HTML](#html)
-- [React Usage](#react-usage)
+- [React Example](#react-example)
 
-# Basic Usage
-
+# Basic Example
 
 ## JavaScript
 
@@ -59,7 +58,7 @@ create({
 })
 ```
 
-# CSS
+## CSS
 
 ```css
 @keyframes enter {
@@ -87,7 +86,7 @@ create({
 }
 ```
 
-# Server
+## Server
 
 ```ts
 const httpExample = (submission: {
@@ -129,7 +128,7 @@ const httpExample = (submission: {
 </form>
 ```
 
-# React Usage
+# React Example
 
 ```jsx
 import { z } from "zod";
