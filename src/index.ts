@@ -1,26 +1,39 @@
-import { z, Schema, ZodError } from "zod";
+import { z } from "zod";
+import type { Schema } from "zod";
+import type { FormEvent } from "react";
+
+export type Message = {
+  value: null | string;
+  timestamp: number;
+};
+
+export type Handler = (event: SubmitEvent | FormEvent<HTMLFormElement>) => void;
 
 export const create = <T extends Schema>(config: {
-  node: HTMLFormElement;
   schema: T;
   onSubmit: (data: z.infer<T>) => Promise<void | string>;
-  onError: (error: { message: null | string; timestamp: number }) => void;
-}): { remove: () => void } => {
-  const { node, onSubmit, schema, onError } = config;
+  onError: (error: Message) => void;
+}): Handler => {
+  const { onSubmit, schema, onError } = config;
 
-  const fn = async (event: SubmitEvent) => {
+  return async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onError({ message: null, timestamp: Date.now() });
-    const form = new FormData(event.target as HTMLFormElement);
-    const data = Object.fromEntries(form);
+    onError({ value: null, timestamp: Date.now() });
+
+    const form = event.currentTarget;
+    const data = Object.fromEntries(new FormData(form));
+
     try {
       const parsed = schema.parse(data);
       const response = await onSubmit(parsed);
-      if (response) onError({ message: response, timestamp: Date.now() });
+      if (response) onError({ value: response, timestamp: Date.now() });
     } catch (error) {
-      if (error instanceof ZodError) {
+      if (error.errors.length) {
+        form.querySelector(`[name="${error.errors[0].path[0]}"]`).focus();
+        error.errors[0].path[0];
+
         return onError({
-          message: error.errors[0].message,
+          value: error.errors[0].message,
           timestamp: Date.now(),
         });
       }
@@ -28,10 +41,12 @@ export const create = <T extends Schema>(config: {
       throw error;
     }
   };
+};
 
-  node.addEventListener("submit", fn);
+export const attach = (element: HTMLFormElement, handler: Handler) => {
+  element.addEventListener("submit", handler);
 
   return {
-    remove: () => node.removeEventListener("submit", fn),
+    remove: () => element.removeEventListener("submit", handler),
   };
 };

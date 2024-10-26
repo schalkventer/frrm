@@ -1,13 +1,16 @@
 <!-- omit in toc -->
 # 🐇 frrm
+
 [![](https://img.shields.io/npm/v/frrm)](https://www.npmjs.com/package/frrm)
 [![](https://img.shields.io/github/stars/schalkventer/frrm?style=social)](https://github.com/schalkventer/frrm)
 
-**Tiny Zod-based, HTML form abstraction that goes brr.**  
+**Tiny 0.4kb Zod-based, HTML form abstraction that goes brr.**  
 
 _⭐ If you find this tool useful please consider giving it a star on Github ⭐_
 
-<img src="https://github.com/user-attachments/assets/7523e907-893a-4540-bc8a-b6800fb8c566" width="500">
+<img
+src="https://github.com/user-attachments/assets/7523e907-893a-4540-bc8a-b6800fb8c566"
+width="500">
 
 - [Basic Example](#basic-example)
   - [JavaScript](#javascript)
@@ -15,20 +18,20 @@ _⭐ If you find this tool useful please consider giving it a star on Github ⭐
   - [Server](#server)
   - [HTML](#html)
 - [React Example](#react-example)
+- [Raw Usage](#raw-usage)
 
 # Basic Example
 
 ## JavaScript
 
 ```ts
-import { create } from 'frrm'
+import { create, attach } from 'frrm'
 import { z } from 'zod'
 import { schema } from './schema'
 import { httpExample } from './server'
 
-create({
+const instance = create({
   onSubmit: httpExample,
-  form: document.querySelector('#form'),
 
   schema: z.object({
     email: z.string().min(1, { message: "Email value is required" }).email({
@@ -51,11 +54,13 @@ create({
   },
 
   onBusy: (busy) => {
-    const button = document.querySelector('button');
+    const button = document.querySelector('#button');
     button.disabled = busy;
     button.innerHTML = busy ? 'Processing...' : 'Login';
   }
 })
+
+attach(instance, document.querySelector('#form'))
 ```
 
 ## CSS
@@ -89,13 +94,9 @@ create({
 ## Server
 
 ```ts
-const httpExample = (submission: {
-  email: string;
-  password: string;
-}): Promise<void | string> =>
+const httpExample = (submission) =>
   new Promise((resolve) => {
     setTimeout(() => {
-      console.log(123);
       if (submission.email !== "john@example.com") resolve("Invalid email");
       if (submission.password !== "hunter2") resolve("Invalid password");
       resolve(undefined);
@@ -130,13 +131,15 @@ const httpExample = (submission: {
 
 # React Example
 
+When using React you can simply pass the handler as is to `onSubmit`.
+
 ```jsx
 import { z } from "zod";
 import { useState } from "react";
-import { create, Message } from "./react";
+import { create } from "./react";
 
 export const Example = () => {
-  const [message, setMessage] = useState<Message>({
+  const [message, setMessage] = useState({
     value: null,
     timestamp: Date.now(),
   });
@@ -193,4 +196,17 @@ export const Example = () => {
     </form>
   );
 };
+```
+
+# Raw Usage
+
+By default the package is wrapped in some transpilation and additional
+functionality to help resolve different module formats. These provisions do add
+a bit to the actual size of the code itself. 
+
+If you want the raw 0.4kb (`.mjs`) version you can import it directly from
+`node_modules` as follows:
+
+```js
+import { create } from '/node_modules/frrm/dist/raw.mjs'
 ```
