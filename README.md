@@ -4,7 +4,7 @@
 [![](https://img.shields.io/npm/v/frrm)](https://www.npmjs.com/package/frrm)
 [![](https://img.shields.io/github/stars/schalkventer/frrm?style=social)](https://github.com/schalkventer/frrm)
 
-**Tiny 0.4kb Zod-based, HTML form abstraction that goes brr.**  
+**Tiny 0.5kb Zod-based, HTML form abstraction that goes brr.**  
 
 _⭐ If you find this tool useful please consider giving it a star on Github ⭐_
 
@@ -18,7 +18,7 @@ width="500">
   - [Server](#server)
   - [HTML](#html)
 - [React Example](#react-example)
-- [Raw Usage](#raw-usage)
+- [Is it really 0.5kb?](#is-it-really-05kb)
 
 # Basic Example
 
@@ -198,15 +198,10 @@ export const Example = () => {
 };
 ```
 
-# Raw Usage
+# Is it really 0.5kb?
 
-By default the package is wrapped in some transpilation and additional
-functionality to help resolve different module formats. These provisions do add
-a bit to the actual size of the code itself. 
-
-If you want the raw 0.4kb (`.mjs`) version you can import it directly from
-`node_modules` as follows:
+Pretty much. Technically it is ~0.537kb . This is the minified code:
 
 ```js
-import { create } from '/node_modules/frrm/dist/raw.mjs'
+const e=e=>{const{onSubmit:t,schema:r,onError:a}=e;return async e=>{e.preventDefault(),a({value:null,timestamp:Date.now()});const n=e.currentTarget,o=Object.fromEntries(new FormData(n));try{const e=r.parse(o),n=await t(e);n&&a({value:n,timestamp:Date.now()})}catch(e){if(e.errors.length)return n.querySelector(`[name="${e.errors[0].path[0]}"]`).focus(),a({value:e.errors[0].message,timestamp:Date.now()});throw e}}},t=(e,t)=>(e.addEventListener("submit",t),{remove:()=>e.removeEventListener("submit",t)});export{t as attach,e as create};
 ```
