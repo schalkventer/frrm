@@ -9,9 +9,6 @@ _⭐ If you find this tool useful please consider giving it a star on Github ⭐
 
 <img src="https://github.com/user-attachments/assets/99555850-ed74-4ef3-9c1d-f6256bf3bc58" width="500">
 
-<!-- omit in toc -->
-### Table of Contents
-
 - [Basic Usage](#basic-usage)
 - [JavaScript](#javascript)
 - [HTML](#html)
@@ -19,9 +16,9 @@ _⭐ If you find this tool useful please consider giving it a star on Github ⭐
 - [React Usage](#react-usage)
 
 
-### Basic Usage
+# Basic Usage
 
-### JavaScript
+## JavaScript
 
 ```js
 import { create } from 'frrm'
@@ -55,7 +52,7 @@ create({
 })
 ```
 
-### HTML
+## HTML
 
 ```html
 <form
@@ -82,7 +79,7 @@ create({
 </form>
 ```
 
-### CSS
+## CSS
 
 ```css
 @keyframes enter {
@@ -110,8 +107,7 @@ create({
 }
 ```
 
-
-### React Usage
+# React Usage
 
 ```jsx
 import { z } from "zod";
