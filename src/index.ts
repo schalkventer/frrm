@@ -16,18 +16,18 @@ export const create = <T extends Schema>(config: {
 }): Handler => {
   const { onSubmit, schema, onError } = config;
 
-  return async (event: FormEvent<HTMLFormElement>) => {
+  return async (event: any) => {
     event.preventDefault();
     onError({ value: null, timestamp: Date.now() });
 
-    const form = event.currentTarget;
-    const data = Object.fromEntries(new FormData(form));
+    const form = event.currentTarget as any;
+    const data = Object.fromEntries(new FormData(form) as any);
 
     try {
       const parsed = schema.parse(data);
       const response = await onSubmit(parsed);
       if (response) onError({ value: response, timestamp: Date.now() });
-    } catch (error) {
+    } catch (error: any) {
       if (error.errors.length) {
         form.querySelector(`[name="${error.errors[0].path[0]}"]`).focus();
         error.errors[0].path[0];
