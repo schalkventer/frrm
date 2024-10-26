@@ -7,14 +7,13 @@
 
 _⭐ If you find this tool useful please consider giving it a star on Github ⭐_
 
-<img src="https://github.com/user-attachments/assets/99555850-ed74-4ef3-9c1d-f6256bf3bc58" width="500">
+<img src="https://github.com/user-attachments/assets/7523e907-893a-4540-bc8a-b6800fb8c566" width="500">
 
 - [Basic Usage](#basic-usage)
 - [JavaScript](#javascript)
 - [HTML](#html)
 - [CSS](#css)
 - [React Usage](#react-usage)
-
 
 # Basic Usage
 
