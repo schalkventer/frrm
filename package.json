@@ -4,15 +4,15 @@
   "version": "1.0.1",
   "description": "Tiny 0.1kb Zod-based form abstraction that goes brr.",
   "author": "Schalk Venter <venterschalk@gmail.com> (http://schalkventer.me/)",
-  "source": "src/react.ts",
-  "types": "dist/react.d.ts",
+  "source": "src/index.ts",
+  "types": "dist/index.d.ts",
   "exports": {
-    "require": "./dist/react.cjs",
-    "default": "./dist/react.modern.js"
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.modern.js"
   },
-  "main": "./dist/react.cjs",
-  "module": "./dist/react.module.js",
-  "unpkg": "./dist/react.umd.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.module.js",
+  "unpkg": "./dist/index.umd.js",
   "scripts": {
     "build": "microbundle"
   },
