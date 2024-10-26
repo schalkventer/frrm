@@ -3,7 +3,7 @@
 [![](https://img.shields.io/npm/v/frrm)](https://www.npmjs.com/package/frrm)
 [![](https://img.shields.io/github/stars/schalkventer/frrm?style=social)](https://github.com/schalkventer/frrm)
 
-**Tiny Zod-based, HTML form abstraction that goes brr**  
+**Tiny Zod-based, HTML form abstraction that goes brr.**  
 
 _⭐ If you find this tool useful please consider giving it a star on Github ⭐_
 
