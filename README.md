@@ -7,7 +7,7 @@
 
 _⭐ If you find this tool useful please consider giving it a star on Github ⭐_
 
-<img src="[https://github.com/schalkventer/frrm/blob/main/example.gif?raw=true](https://github.com/user-attachments/assets/3ca811ea-4d82-4855-a854-6e33ea9b8611)" width="500">
+<img src="https://github.com/user-attachments/assets/99555850-ed74-4ef3-9c1d-f6256bf3bc58" width="500">
 
 <!-- omit in toc -->
 ### Table of Contents
