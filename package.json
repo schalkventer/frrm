@@ -1,14 +1,14 @@
 {
   "name": "frrm",
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Tiny 0.1kb Zod-based form abstraction that goes brr.",
   "author": "Schalk Venter <venterschalk@gmail.com> (http://schalkventer.me/)",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "exports": {
     "require": "./dist/index.cjs",
-    "default": "./dist/index.modern.js"
+    "default": "./dist/react.modern.js"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.module.js",

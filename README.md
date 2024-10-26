@@ -10,75 +10,56 @@ _⭐ If you find this tool useful please consider giving it a star on Github ⭐
 <img src="https://github.com/user-attachments/assets/7523e907-893a-4540-bc8a-b6800fb8c566" width="500">
 
 - [Basic Usage](#basic-usage)
-- [JavaScript](#javascript)
-- [HTML](#html)
+  - [JavaScript](#javascript)
 - [CSS](#css)
+- [Server](#server)
+  - [HTML](#html)
 - [React Usage](#react-usage)
 
 # Basic Usage
 
+
 ## JavaScript
 
-```js
+```ts
 import { create } from 'frrm'
 import { z } from 'zod'
-
-const fromServer = (submission: {
-  email: string;
-  password: string;
-}): Promise<void | string> =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(123);
-      if (submission.email !== "john@example.com") resolve("Invalid email");
-      if (submission.password !== "hunter2") resolve("Invalid password");
-      resolve(undefined);
-    }, 4000);
-  });
+import { schema } from './schema'
+import { httpExample } from './server'
 
 create({
+  onSubmit: httpExample,
   form: document.querySelector('#form'),
+
   schema: z.object({
-    email: z.string().email(),
-    password: z.string().min(6),
+    email: z.string().min(1, { message: "Email value is required" }).email({
+      message: "Email is not formatted correctly",
+    }),
+    password: z
+      .string()
+      .min(1, {
+        message: "Password value is required",
+      })
+      .min(6, {
+        message: "Password is required to be at least 6 characters",
+      }),
   }),
-  onSubmit: fromServer,
+  
   onError: (error) => {
     const element = document.querySelector('#error');
     if (!error.value) element.innerHTML = '';
     else element.innerHTML = `<div class="message">${error.value}</div>`;
   },
+
+  onBusy: (busy) => {
+    const button = document.querySelector('button');
+    button.disabled = busy;
+    button.innerHTML = busy ? 'Processing...' : 'Login';
+  }
 })
 ```
 
-## HTML
-
-```html
-<form
-  id="form"
-  class="form"
->
-  <label>
-    <span>Email:</span>
-    <input disabled={busy} type="email" name="email" />
-  </label>
-
-  <div>
-    <label>
-      <span>Password:</span>
-      <input disabled={busy} type="password" name="password" />
-    </label>
-  </div>
-
-  <div id="error"></div>
-
-  <button type="submit" disabled={busy}>
-    {busy ? "Processing..." : "Login"}
-  </button>
-</form>
-```
-
-## CSS
+# CSS
 
 ```css
 @keyframes enter {
@@ -106,14 +87,10 @@ create({
 }
 ```
 
-# React Usage
+# Server
 
-```jsx
-import { z } from "zod";
-import { useState } from "react";
-import { create, Message } from "./react";
-
-const fromServer = (submission: {
+```ts
+const httpExample = (submission: {
   email: string;
   password: string;
 }): Promise<void | string> =>
@@ -125,20 +102,39 @@ const fromServer = (submission: {
       resolve(undefined);
     }, 4000);
   });
+```
 
-const schema = z.object({
-  email: z.string().min(1, { message: "Email value is required" }).email({
-    message: "Email is not formatted correctly",
-  }),
-  password: z
-    .string()
-    .min(1, {
-      message: "Password value is required",
-    })
-    .min(6, {
-      message: "Password is required to be at least 6 characters",
-    }),
-});
+## HTML
+
+```html
+<form
+  id="form"
+  class="form"
+>
+  <label>
+    <span>Email:</span>
+    <input disabled={busy} type="email" name="email" />
+  </label>
+
+  <div>
+    <label>
+      <span>Password:</span>
+      <input disabled={busy} type="password" name="password" />
+    </label>
+  </div>
+
+  <div id="error"></div>
+
+  <button type="submit">Login</button>
+</form>
+```
+
+# React Usage
+
+```jsx
+import { z } from "zod";
+import { useState } from "react";
+import { create, Message } from "./react";
 
 export const Example = () => {
   const [message, setMessage] = useState<Message>({
@@ -156,6 +152,20 @@ export const Example = () => {
         onSubmit: fromServer,
         onError: setMessage,
         onBusy: setBusy,
+
+        schema: z.object({
+          email: z.string().min(1, { message: "Email value is required" }).email({
+            message: "Email is not formatted correctly",
+          }),
+          password: z
+            .string()
+            .min(1, {
+              message: "Password value is required",
+            })
+            .min(6, {
+              message: "Password is required to be at least 6 characters",
+            }),
+        }),
       })}
     >
       <label>
