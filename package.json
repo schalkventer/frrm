@@ -1,0 +1,34 @@
+{
+  "name": "frrm",
+  "type": "module",
+  "version": "1.0.1",
+  "description": "Tiny 0.1kb Zod-based form abstraction that goes brr.",
+  "author": "Schalk Venter <venterschalk@gmail.com> (http://schalkventer.me/)",
+  "source": "src/react.ts",
+  "types": "dist/react.d.ts",
+  "exports": {
+    "require": "./dist/react.cjs",
+    "default": "./dist/react.modern.js"
+  },
+  "main": "./dist/react.cjs",
+  "module": "./dist/react.module.js",
+  "unpkg": "./dist/react.umd.js",
+  "scripts": {
+    "build": "microbundle"
+  },
+  "devDependencies": {
+    "microbundle": "^0.15.1",
+    "react": "^18.3.1",
+    "zod": "^3.22.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/schalkventer/frrm.git"
+  },
+  "keywords": [
+    "zod",
+    "form"
+  ],
+  "bugs": "https://github.com/schalkventer/frrm/issues",
+  "license": "MIT"
+}
