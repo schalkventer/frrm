@@ -7,11 +7,10 @@
 
 _⭐ If you find this tool useful please consider giving it a star on Github ⭐_
 
+<img src="https://github.com/user-attachments/assets/99555850-ed74-4ef3-9c1d-f6256bf3bc58" width="500">
+
 ### Basic Usage
 
-```js
-  <img src="https://github.com/user-attachments/assets/99555850-ed74-4ef3-9c1d-f6256bf3bc58" width="500">
-```
 
 ### React Usage
 
