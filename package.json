@@ -1,7 +1,7 @@
 {
   "name": "frrm",
   "type": "module",
-  "version": "1.3.9",
+  "version": "1.4.2",
   "description": "Tiny 0.5kb Zod-based, HTML form abstraction that goes brr.",
   "author": "Schalk Venter <venterschalk@gmail.com> (http://schalkventer.me/)",
   "source": "src/index.ts",

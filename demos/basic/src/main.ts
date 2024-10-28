@@ -1,8 +1,5 @@
-import { create, attach } from "./dist";
+import { create, attach } from "./frrm";
 import { z } from "zod";
-
-console.log(document.querySelector("form")!);
-console.log(document.querySelector('[role="alert"]')!);
 
 const handler = create({
   /**
@@ -47,13 +44,20 @@ const handler = create({
      * incorrect email or password.
      */
     return new Promise((resolve) => {
-      setTimeout(() => {
-        if (submission.email !== "john@example.com")
-          throw new Error("Invalid email");
-        if (submission.password !== "hunter2")
-          throw new Error("Invalid password");
-        resolve(undefined);
-      }, 4000);
+      try {
+        setTimeout(() => {
+          if (submission.email !== "john@example.com")
+            resolve(Error("Invalid email"));
+
+          if (submission.password !== "hunter2")
+            resolve(Error("Invalid password"));
+
+          resolve(undefined);
+        }, 4000);
+      } catch (error) {
+        console.error(error);
+        resolve(Error("Something went wrong"));
+      }
     });
   },
 });

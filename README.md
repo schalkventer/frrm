@@ -70,13 +70,20 @@ const handler = create({
      * incorrect email or password.
      */
     return new Promise((resolve) => {
-      setTimeout(() => {
-        if (submission.email !== "john@example.com")
-          throw new Error("Invalid email");
-        if (submission.password !== "hunter2")
-          throw new Error("Invalid password");
-        resolve(undefined);
-      }, 4000);
+      try {
+        setTimeout(() => {
+          if (submission.email !== "john@example.com")
+            resolve(Error("Invalid email"));
+
+          if (submission.password !== "hunter2")
+            resolve(Error("Invalid password"));
+
+          resolve(undefined);
+        }, 4000);
+      } catch (error) {
+        console.error(error);
+        resolve(Error("Something went wrong"));
+      }
     });
   },
 });
@@ -89,7 +96,6 @@ const handler = create({
  * `remove` method for cleanup.
  */
 attach(document.querySelector("form")!, handler);
-
 ```
 
 ## CSS
