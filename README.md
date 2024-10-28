@@ -15,7 +15,6 @@ width="500">
 - [Basic Example](#basic-example)
   - [JavaScript](#javascript)
   - [CSS](#css)
-  - [Server](#server)
   - [HTML](#html)
 - [React Example](#react-example)
 - [Is it really 0.5kb?](#is-it-really-05kb)
@@ -27,14 +26,21 @@ width="500">
 ```ts
 import { create, attach } from 'frrm'
 import { z } from 'zod'
-import { httpExample } from './server'
 
-const instance = create({
-  // Indicates that submit button and input should be disabled during "onSubmit".
-  // If a string is passed then the string will replace the submit button text
+const handler = create({
+  /**
+   * If string value then will replace submit button text with provided value
+   * while server request is resolving. Will also disable all buttons and
+   * inputs. If `true` is passed the label wont be replaced, but everything will
+   * still disable. Alternatively you can pass a callback if you want to
+   * manually handle the busy state (will prevent default behaviour).
+   */
   onBusy: "Loading...",
 
-  // Client-side Zod validation before firing "onSubmit"
+  /**
+   * Applies client-side Zod validation to determine whether `onSubmit` should
+   * fire.
+   */
   schema: z.object({
     email: z.string().min(1, { message: "Email value is required" }).email({
       message: "Email is not formatted correctly",
@@ -48,31 +54,42 @@ const instance = create({
         message: "Password is required to be at least 6 characters",
       }),
   }),
-  
-  // What what to do if "schema" or "onSubmit" returns a string error
-  // Note that will fire with "onError" as "null" to clear error on submit
-  onError: (error) => {
-    const element = document.querySelector('#error');
-    if (!error.value) element.innerHTML = '';
-    else element.innerHTML = `<div class="message">${error.value}</div>`;
-  },
 
-  // Promise that either resolves to string or void
+  /**
+   * Will inject error message into the provided DOM element. Alternatively a
+   * callback can be provided that accepts both `timestamp` and `value`
+   * properties. Note that error is automatically removed when the form is
+   * submitted again - likewise a `null` value will be passed to the callback
+   * (if used).
+   */
+  onError: document.querySelector('[role="alert"]')!,
+
   onSubmit: (submission) => {
-    // Fake server response example
+    /**
+     * Fake server request that takes 4 seconds to resolve, and throws on
+     * incorrect email or password.
+     */
     return new Promise((resolve) => {
       setTimeout(() => {
-        if (submission.email !== "john@example.com") resolve("Invalid email");
-        if (submission.password !== "hunter2") resolve("Invalid password");
+        if (submission.email !== "john@example.com")
+          throw new Error("Invalid email");
+        if (submission.password !== "hunter2")
+          throw new Error("Invalid password");
         resolve(undefined);
       }, 4000);
     });
-  }
-})
+  },
+});
 
-// If using with vanilla JS (no framework), then you need to attach event
-// Returns an objec that can remove listener with "remove" method.
-attach(instance, document.querySelector('#form'))
+/**
+ * If you are using a framework like React, then you can simply pass the
+ * instance to the onSubmit handler. However, if you are using plain JavaScript,
+ * then you need to attach the event listener manually. You can use the `attach`
+ * function to do this if you want, since it provides a returned object with a
+ * `remove` method for cleanup.
+ */
+attach(document.querySelector("form")!, handler);
+
 ```
 
 ## CSS
@@ -89,14 +106,14 @@ attach(instance, document.querySelector('#form'))
   }
 }
 
-.form {
+form {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
 }
 
-.message {
+[role="alert"] > * {
   background: rgba(255, 0, 0, 0.05);
   padding: 1rem;
   animation: enter 0.3s ease;
@@ -106,10 +123,7 @@ attach(instance, document.querySelector('#form'))
 ## HTML
 
 ```html
-<form
-  id="form"
-  class="form"
->
+<form>
   <label>
     <span>Email:</span>
     <input type="email" name="email" />
@@ -122,7 +136,7 @@ attach(instance, document.querySelector('#form'))
     </label>
   </div>
 
-  <div id="error"></div>
+  <div role="alert" aria-live="assertive"></div>
   <button type="submit">Login</button>
 </form>
 ```

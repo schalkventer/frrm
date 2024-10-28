@@ -9,36 +9,98 @@ export type Message = {
 
 export type Handler = (event: SubmitEvent | FormEvent<HTMLFormElement>) => void;
 
-export const create = <T extends Schema>(config: {
+export type Config<T extends Schema> = {
   schema: T;
   onSubmit: (data: z.infer<T>) => Promise<void | string>;
-  onError: (error: Message) => void;
-}): Handler => {
-  const { onSubmit, schema, onError } = config;
+  onError: HTMLElement | ((error: Message) => void);
+  onBusy?: boolean | string | ((busy: boolean) => void);
+};
+
+export const create = <T extends Schema>(config: Config<T>): Handler => {
+  const { onSubmit, schema, onError, onBusy } = config;
 
   return async (event: any) => {
     event.preventDefault();
-    onError({ value: null, timestamp: Date.now() });
+    if (typeof onError === "function") {
+      onError({ value: null, timestamp: Date.now() });
+    } else {
+      onError.innerHTML = "";
+    }
 
     const form = event.currentTarget as any;
     const data = Object.fromEntries(new FormData(form) as any);
 
-    try {
-      const parsed = schema.parse(data);
-      const response = await onSubmit(parsed);
-      if (response) onError({ value: response, timestamp: Date.now() });
-    } catch (error: any) {
+    const buttons = form.querySelectorAll("button");
+    const inputs = form.querySelectorAll("input, textarea, select");
+    const prevText = form.querySelector("button[type=submit]")?.textContent;
+
+    const handleError = (error: any) => {
+      let message = error.message;
+
       if (error.errors.length) {
         form.querySelector(`[name="${error.errors[0].path[0]}"]`).focus();
-        error.errors[0].path[0];
-
-        return onError({
-          value: error.errors[0].message,
-          timestamp: Date.now(),
-        });
+        message = error.errors[0].message;
+      } else {
+        message = error.message;
       }
 
-      throw error;
+      if (typeof onError === "function") {
+        onError({ value: message, timestamp: Date.now() });
+      } else {
+        onError.innerHTML = `<p>${message}</p>`;
+      }
+    };
+
+    try {
+      const parsed = schema.parse(data);
+
+      if (onBusy) {
+        if (typeof onBusy === "function") {
+          onBusy(true);
+        } else {
+          for (const button of buttons) {
+            button.disabled = true;
+          }
+
+          for (const input of inputs) {
+            input.disabled = true;
+          }
+
+          form.querySelector("button[type=submit]").textContent = onBusy;
+        }
+      }
+
+      const response = await onSubmit(parsed).catch((error) =>
+        handleError(error)
+      );
+
+      if (response) {
+        event.preventDefault();
+
+        if (typeof onError === "function") {
+          onError({ value: response, timestamp: Date.now() });
+        } else {
+          onError.innerHTML = `<p>${response}</p>`;
+        }
+
+        if (onBusy) {
+          if (typeof onBusy === "function") {
+            onBusy(false);
+          } else {
+            for (const button of buttons) {
+              button.disabled = false;
+            }
+
+            for (const input of inputs) {
+              input.disabled = false;
+            }
+
+            form.querySelector("button[type=submit]").textContent = prevText;
+          }
+        }
+      }
+    } catch (error: any) {
+      handleError(error);
     }
   };
 };
