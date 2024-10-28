@@ -31,7 +31,8 @@ import { httpExample } from './server'
 
 const instance = create({
   // Indicates that submit button and input should be disabled during "onSubmit".
-  onBusy: true,
+  // If a string is passed then the string will replace the submit button text
+  onBusy: "Loading...",
 
   // Client-side Zod validation before firing "onSubmit"
   schema: z.object({
@@ -141,8 +142,6 @@ export const Example = () => {
     timestamp: Date.now(),
   });
 
-  const [busy, setBusy] = useState(false);
-
   return (
     <form
       className="form"
@@ -150,7 +149,7 @@ export const Example = () => {
         schema,
         onSubmit: fromServer,
         onError: setMessage,
-        onBusy: setBusy,
+        onBusy: "Loading...",
 
         schema: z.object({
           email: z.string().min(1, { message: "Email value is required" }).email({
@@ -169,13 +168,13 @@ export const Example = () => {
     >
       <label>
         <span>Email:</span>
-        <input disabled={busy} type="email" name="email" />
+        <input type="email" name="email" />
       </label>
 
       <div>
         <label>
           <span>Password:</span>
-          <input disabled={busy} type="password" name="password" />
+          <input type="password" name="password" />
         </label>
       </div>
 
@@ -187,8 +186,8 @@ export const Example = () => {
         )}
       </div>
 
-      <button type="submit" disabled={busy}>
-        {busy ? "Processing..." : "Login"}
+      <button type="submit">
+        Login
       </button>
     </form>
   );
