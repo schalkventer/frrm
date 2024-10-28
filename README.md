@@ -27,12 +27,13 @@ width="500">
 ```ts
 import { create, attach } from 'frrm'
 import { z } from 'zod'
-import { schema } from './schema'
 import { httpExample } from './server'
 
 const instance = create({
-  onSubmit: httpExample,
+  // Indicates that submit button and input should be disabled during "onSubmit".
+  onBusy: true,
 
+  // Client-side Zod validation before firing "onSubmit"
   schema: z.object({
     email: z.string().min(1, { message: "Email value is required" }).email({
       message: "Email is not formatted correctly",
@@ -47,19 +48,29 @@ const instance = create({
       }),
   }),
   
+  // What what to do if "schema" or "onSubmit" returns a string error
+  // Note that will fire with "onError" as "null" to clear error on submit
   onError: (error) => {
     const element = document.querySelector('#error');
     if (!error.value) element.innerHTML = '';
     else element.innerHTML = `<div class="message">${error.value}</div>`;
   },
 
-  onBusy: (busy) => {
-    const button = document.querySelector('#button');
-    button.disabled = busy;
-    button.innerHTML = busy ? 'Processing...' : 'Login';
+  // Promise that either resolves to string or void
+  onSubmit: (submission) => {
+    // Fake server response example
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (submission.email !== "john@example.com") resolve("Invalid email");
+        if (submission.password !== "hunter2") resolve("Invalid password");
+        resolve(undefined);
+      }, 4000);
+    });
   }
 })
 
+// If using with vanilla JS (no framework), then you need to attach event
+// Returns an objec that can remove listener with "remove" method.
 attach(instance, document.querySelector('#form'))
 ```
 
@@ -91,19 +102,6 @@ attach(instance, document.querySelector('#form'))
 }
 ```
 
-## Server
-
-```ts
-const httpExample = (submission) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      if (submission.email !== "john@example.com") resolve("Invalid email");
-      if (submission.password !== "hunter2") resolve("Invalid password");
-      resolve(undefined);
-    }, 4000);
-  });
-```
-
 ## HTML
 
 ```html
@@ -113,18 +111,17 @@ const httpExample = (submission) =>
 >
   <label>
     <span>Email:</span>
-    <input disabled={busy} type="email" name="email" />
+    <input type="email" name="email" />
   </label>
 
   <div>
     <label>
       <span>Password:</span>
-      <input disabled={busy} type="password" name="password" />
+      <input type="password" name="password" />
     </label>
   </div>
 
   <div id="error"></div>
-
   <button type="submit">Login</button>
 </form>
 ```
