@@ -11,7 +11,7 @@ export type Handler = (event: SubmitEvent | FormEvent<HTMLFormElement>) => void;
 
 export type Config<T extends Schema> = {
   schema: T;
-  onSubmit: (data: z.infer<T>) => Promise<void | Error>;
+  onSubmit: (data: z.infer<T>) => Promise<void | boolean | Error>;
   onError: HTMLElement | ((error: Message) => void);
   onBusy?: boolean | string | ((busy: boolean) => void);
 };
@@ -57,12 +57,15 @@ export const create = <T extends Schema>(config: Config<T>): Handler => {
 
       if (response) {
         event.preventDefault();
-        const message = response instanceof Error ? response.message : response;
 
-        if (typeof onError === "function") {
-          onError({ value: message, timestamp: Date.now() });
-        } else {
-          onError.innerHTML = `<p>${message}</p>`;
+        if (response !== true) {
+          const message = response instanceof Error ? response.message : response;
+
+          if (typeof onError === "function") {
+            onError({value: message, timestamp: Date.now()});
+          } else {
+            onError.innerHTML = `<p>${message}</p>`;
+          }
         }
 
         if (onBusy) {
