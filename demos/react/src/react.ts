@@ -1,4 +1,4 @@
-import { z, Schema, ZodError } from "zod";
+import { z, ZodSchema, ZodError } from "zod";
 import { FormEvent } from "react";
 
 export type Message = {
@@ -6,7 +6,7 @@ export type Message = {
   timestamp: number;
 };
 
-export const create = <T extends Schema>(config: {
+export const create = <T extends ZodSchema>(config: {
   schema: T;
   onSubmit: (data: z.infer<T>) => Promise<void | string>;
   onError: (error: Message) => void;
@@ -29,16 +29,17 @@ export const create = <T extends Schema>(config: {
       if (onBusy) onBusy(false);
     } catch (error) {
       if (error instanceof ZodError) {
-        (
-          form.querySelector(`[name="${error.errors[0].path[0]}"]`) as any
-        ).focus();
+        const issues = error.issues;
+        if (issues.length > 0) {
+          (
+            form.querySelector(`[name="${String(issues[0].path[0])}"]`) as any
+          ).focus();
 
-        error.errors[0].path[0];
-
-        return onError({
-          value: error.errors[0].message,
-          timestamp: Date.now(),
-        });
+          return onError({
+            value: issues[0].message,
+            timestamp: Date.now(),
+          });
+        }
       }
 
       throw error;

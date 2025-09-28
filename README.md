@@ -31,7 +31,7 @@ const handler = create({
   /**
    * If string value then will replace submit button text with provided value
    * while server request is resolving. Will also disable all buttons and
-   * inputs. If `true` is passed the label wont be replaced, but everything will
+   * inputs. If `true` is passed the label won't be replaced, but everything will
    * still disable. Alternatively you can pass a callback if you want to
    * manually handle the busy state (will prevent default behaviour).
    */
@@ -58,7 +58,9 @@ const handler = create({
   /**
    * Will inject error message into the provided DOM element. Alternatively a
    * callback can be provided that accepts both `timestamp` and `value`
-   * properties. Note that error is automatically removed when the form is
+   * properties. 
+   * 
+   * Note that error is automatically removed when the form is
    * submitted again - likewise a `null` value will be passed to the callback
    * (if used).
    */
@@ -90,10 +92,11 @@ const handler = create({
 
 /**
  * If you are using a framework like React, then you can simply pass the
- * instance to the onSubmit handler. However, if you are using plain JavaScript,
- * then you need to attach the event listener manually. You can use the `attach`
- * function to do this if you want, since it provides a returned object with a
- * `remove` method for cleanup.
+ * instance to the onSubmit handler (see example further down page). 
+ * However, if you are using plain JavaScript,  then you need to 
+ * attach the event listener manually. You can use the `attach`
+ * function to do this if you want, since it provides a returned object 
+ * with a `remove` method for cleanup.
  */
 attach(document.querySelector("form")!, handler);
 ```
@@ -106,6 +109,7 @@ attach(document.querySelector("form")!, handler);
     transform: translateY(-0.2rem);
     opacity: 0.5;
   }
+  
   to {
     transform: translateY(0);
     opacity: 1;

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Schema } from "zod";
+import type { ZodSchema } from "zod";
 import type { FormEvent } from "react";
 
 export type Message = {
@@ -9,14 +9,14 @@ export type Message = {
 
 export type Handler = (event: SubmitEvent | FormEvent<HTMLFormElement>) => void;
 
-export type Config<T extends Schema> = {
+export type Config<T extends ZodSchema> = {
   schema: T;
   onSubmit: (data: z.infer<T>) => Promise<void | Error>;
   onError: Element | ((error: Message) => void);
   onBusy?: boolean | string | ((busy: boolean) => void);
 };
 
-export const create = <T extends Schema>(config: Config<T>): Handler => {
+export const create = <T extends ZodSchema>(config: Config<T>): Handler => {
   const { onSubmit, schema, onError, onBusy } = config;
 
   return async (event: any) => {
@@ -85,9 +85,11 @@ export const create = <T extends Schema>(config: Config<T>): Handler => {
     } catch (error: any) {
       let message = error.message;
 
-      if (error.errors.length) {
-        form.querySelector(`[name="${error.errors[0].path[0]}"]`).focus();
-        message = error.errors[0].message;
+      if (error.issues && error.issues.length) {
+        form
+          .querySelector(`[name="${String(error.issues[0].path[0])}"]`)
+          .focus();
+        message = error.issues[0].message;
       } else {
         message = error.message;
       }
