@@ -21,6 +21,8 @@ width="500">
 
 # Basic Example
 
+The latest v2 of `frrm` uses Zod v4 (`npm install frrm`). If you want to use `frrm` with Zod v3 then you need to install version `1.4.2` (`npm install frrm@1`). Note currently the API is exactly the same, the only difference is the Zod version you plan on using.
+
 ## JavaScript
 
 ```ts
