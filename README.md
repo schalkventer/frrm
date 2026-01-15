@@ -66,7 +66,7 @@ const handler = create({
    * submitted again - likewise a `null` value will be passed to the callback
    * (if used).
    */
-  onError: document.querySelector('[role="alert"]')!,
+  onError: document.querySelector('[role="alert"]'),
 
   onSubmit: (submission) => {
     /**
